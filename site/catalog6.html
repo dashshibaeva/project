@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интернет-магазин</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #fff;
+            color: #333;
+        }
+
+        header {
+            background-color: #f5b0c1;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav__link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav__link:hover,
+        .nav__link--active {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1450px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .container h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .page-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product {
+            border: 1px solid #f7567e;
+            padding: 1rem;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .product:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .product img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            max-width: 100%;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            transition: height 0.4s ease, width 0.4s ease;
+        }
+
+        .product h3 {
+            margin-bottom: 0.5rem;
+            transition: font-size 0.4s ease;
+        }
+
+        .product p {
+            margin-bottom: 0.5rem;
+            transition: font-size 0.4s ease;
+        }
+
+        .product button {
+            margin-top: 0.5rem;
+            padding: 0.7rem 1rem;
+            border: none;
+            background-color: #f7567e;
+            color: white;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .product button:hover {
+            background-color: #e44a70;
+        }
+
+        .product .close-btn {
+            display: none;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #ff5722;
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            align-items: center;
+            justify-content: center;
+            z-index: 1002;
+            margin-top: 0;
+            padding: 0;
+        }
+
+        .product.expanded {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.1);
+            width: min(90vw, 520px);
+            max-width: 520px;
+            z-index: 1001;
+            padding: 2rem;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .product.expanded img {
+            width: 100%;
+            height: 320px;
+        }
+
+        .product.expanded h3 {
+            font-size: 24px;
+        }
+
+        .product.expanded p {
+            font-size: 16px;
+        }
+
+        .product.expanded .close-btn {
+            display: flex;
+        }
+
+        .cart-panel {
+            position: sticky;
+            top: 20px;
+        }
+
+        .cart {
+            background-color: #f8d2db;
+            padding: 1rem;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+            border: 1px solid #f5b0c1;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cart-header h3 {
+            color: #8f2e4b;
+        }
+
+        .cart-count {
+            background: #f7567e;
+            color: white;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 10px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .cart-items {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1rem 0;
+            max-height: 360px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .cart-item {
+            background: white;
+            border-radius: 10px;
+            padding: 0.8rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f1d0d8;
+        }
+
+        .cart-item-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.8rem;
+            align-items: flex-start;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .cart-item-price {
+            margin-top: 0.3rem;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .remove-btn {
+            background: #ffeded;
+            color: #c0392b;
+            border: 1px solid #f0b6b0;
+            border-radius: 6px;
+            padding: 0.35rem 0.6rem;
+            cursor: pointer;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .remove-btn:hover {
+            background: #ffd9d4;
+        }
+
+        .empty-cart {
+            background: white;
+            color: #777;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px dashed #d9a8b5;
+        }
+
+        .cart-summary {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cart-summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-summary-row:last-child {
+            margin-bottom: 0;
+            font-weight: bold;
+            font-size: 18px;
+            color: #8f2e4b;
+        }
+
+        .cart-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .cart-action-btn {
+            border: none;
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .checkout-btn {
+            background: #f7567e;
+            color: white;
+        }
+
+        .checkout-btn:hover {
+            background: #e44a70;
+        }
+
+        .clear-btn {
+            background: white;
+            color: #8f2e4b;
+            border: 1px solid #e8a8b8;
+        }
+
+        .clear-btn:hover {
+            background: #fff2f5;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        footer {
+            background-color: #f5b0c1;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 992px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product.expanded {
+                transform: translate(-50%, -50%) scale(1);
+                width: 92vw;
+                padding: 1.2rem;
+            }
+
+            .product.expanded img {
+                height: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Ligne Couture</h1>
+        <nav class="nav">
+            <a class="nav__link" href="index.html">Главная</a>
+            <a class="nav__link nav__link--active" href="catalog.html">Каталог</a>
+            <a class="nav__link" href="contact.html">Контакты</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Каталог товаров</h2>
+
+        <div class="page-layout">
+            <div class="products">
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/29213b5e-eee3-44cc-bf50-87ea444755f6.webp" alt="Кокетливый сияние">
+                    <h3>Кокетливое сияние</h3>
+                    <p>Коллекция: Жемчужная роза</p>
+                    <p>Элегантное изделие из коллекции «Жемчужная роза» с выразительным силуэтом и утончённым декоративным оформлением.</p>
+                    <p><strong>Цена: 1 450 000 руб.</strong></p>
+                    <button onclick="addToCart('Кокетливый сияние', 1450000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/573818bc-4f25-4524-9f61-fd6508005250.webp" alt="Хрустальная роза">
+                    <h3>Хрустальная роза</h3>
+                    <p>Коллекция: Жемчужная роза</p>
+                    <p>Изящная модель с декоративными акцентами, созданная для торжественных мероприятий и яркого вечернего образа.</p>
+                    <p><strong>Цена: 1 590 000 руб.</strong></p>
+                    <button onclick="addToCart('Хрустальная роза', 1590000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/6fa6d387-4cad-499e-953c-5ddc6aaa3c0a.webp" alt="Феерия">
+                    <h3>Феерия</h3>
+                    <p>Коллекция: Жемчужная роза</p>
+                    <p>Лёгкая и эффектная модель, сочетающая в себе утончённость формы, декоративность и современный стиль.</p>
+                    <p><strong>Цена: 590 000 руб.</strong></p>
+                    <button onclick="addToCart('Феерия', 590000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/81b17380a2947495844aed01a44bb149.jpg" alt="Шепчущий бант">
+                    <h3>Шепчущий бант</h3>
+                    <p>Коллекция: Жемчужная роза</p>
+                    <p>Нежная модель с выразительным бантом, подходящая для особых случаев и праздничных выходов.</p>
+                    <p><strong>Цена: 169 000 руб.</strong></p>
+                    <button onclick="addToCart('Шепчущий бант', 169000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/1b59fd55-d1f5-4ac7-9574-283e75d45846.webp" alt="Звездный бриз">
+                    <h3>Звездный бриз</h3>
+                    <p>Коллекция: Морской бриз</p>
+                    <p>Модель с плавными линиями и акцентным блеском, вдохновлённая морской темой и динамикой волн.</p>
+                    <p><strong>Цена: 1 400 000 руб.</strong></p>
+                    <button onclick="addToCart('Звездный бриз', 1400000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/6fb3ccf6-f4b6-45bd-9fc1-5ced639fe364.webp" alt="Волнение">
+                    <h3>Волнение</h3>
+                    <p>Коллекция: Морской бриз</p>
+                    <p>Выразительное изделие с мягкими переходами форм, подчёркивающее элегантность и художественный образ.</p>
+                    <p><strong>Цена: 890 000 руб.</strong></p>
+                    <button onclick="addToCart('Волнение', 890000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/e2e7dfdd8d56d5205efb7f01725ebb89.jpg" alt="Шелковые щупальца ночи">
+                    <h3>Шелковые щупальца ночи</h3>
+                    <p>Коллекция: Морской бриз</p>
+                    <p>Сложная художественная композиция с эффектным силуэтом и насыщенной декоративной подачей.</p>
+                    <p><strong>Цена: 1 300 000 руб.</strong></p>
+                    <button onclick="addToCart('Шелковые щупальца ночи', 1300000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/i (1).webp" alt="Шёпот волн">
+                    <h3>Шёпот волн</h3>
+                    <p>Коллекция: Морской бриз</p>
+                    <p>Эффектная модель с плавным настроением и декоративными элементами, навеянными морской стихией.</p>
+                    <p><strong>Цена: 1 700 000 руб.</strong></p>
+                    <button onclick="addToCart('Шёпот волн', 1700000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/0fdc3ead-88dd-49ae-adc4-7d8fbc51c5ae.webp" alt="Роза">
+                    <h3>Роза</h3>
+                    <p>Коллекция: Цветочная симфония</p>
+                    <p>Классическая цветочная композиция с выразительным силуэтом и утончённым декоративным исполнением.</p>
+                    <p><strong>Цена: 1 000 000 руб.</strong></p>
+                    <button onclick="addToCart('Роза', 1000000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/a2e073c3-e4ee-459e-8290-73cc70a355a8.webp" alt="Пурпур">
+                    <h3>Пурпур</h3>
+                    <p>Коллекция: Цветочная симфония</p>
+                    <p>Богатая по цвету и образу модель, создающая торжественное и выразительное визуальное впечатление.</p>
+                    <p><strong>Цена: 950 000 руб.</strong></p>
+                    <button onclick="addToCart('Пурпур', 950000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/aeb239f9-4903-4ad9-93b1-58d0648e411b.webp" alt="Пикабу">
+                    <h3>Пикабу</h3>
+                    <p>Коллекция: Цветочная симфония</p>
+                    <p>Оригинальная модель с ярким характером, сочетающая лёгкость подачи и выразительные детали.</p>
+                    <p><strong>Цена: 900 000 руб.</strong></p>
+                    <button onclick="addToCart('Пикабу', 900000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/f1a7551b-89c2-4c2a-82a5-784aa166b08f.webp" alt="Фиа">
+                    <h3>Фиа (эксклюзив)</h3>
+                    <p>Коллекция: Цветочная симфония</p>
+                    <p>Эксклюзивная модель премиального уровня с акцентом на оригинальность, форму и богатую отделку.</p>
+                    <p><strong>Цена: 1 200 000 руб.</strong></p>
+                    <button onclick="addToCart('Фиа', 1200000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/dc2f7f1d-ca9a-478d-ae94-9b10b796fe69.webp" alt="Ксифиум">
+                    <h3>Ксифиум</h3>
+                    <p>Коллекция: Царство ириса</p>
+                    <p>Выразительная дизайнерская работа, в которой сочетаются художественная идея и изящный силуэт.</p>
+                    <p><strong>Цена: 1 400 000 руб.</strong></p>
+                    <button onclick="addToCart('Ксифиум', 1400000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/67a75bc3-bebe-41b3-b796-3f9536f89b40.webp" alt="Чикан">
+                    <h3>Чикан</h3>
+                    <p>Коллекция: Царство ириса</p>
+                    <p>Стильная модель с яркой подачей и выразительным художественным оформлением для особых случаев.</p>
+                    <p><strong>Цена: 1 600 000 руб.</strong></p>
+                    <button onclick="addToCart('Чикан', 1600000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/8fbe069b-268b-41bd-9525-fd9ef25e479b.webp" alt="Ракушка">
+                    <h3>Ракушка</h3>
+                    <p>Коллекция: Вторая волна</p>
+                    <p>Модель с пластичной формой и выразительной эстетикой, вдохновлённой природными морскими линиями.</p>
+                    <p><strong>Цена: 2 250 000 руб.</strong></p>
+                    <button onclick="addToCart('Ракушка', 2250000, event)">В корзину</button>
+                </div>
+
+                <div class="product" onclick="toggleExpand(this)">
+                    <button class="close-btn" onclick="closeExpandedCard(event, this)">×</button>
+                    <img src="images/4527db7e-e908-43ee-8966-4c06afc0ec7e.webp" alt="Озерная пена">
+                    <h3>Озерная пена</h3>
+                    <p>Коллекция: Вторая волна</p>
+                    <p>Премиальная модель с воздушным визуальным образом и детализированной художественной отделкой.</p>
+                    <p><strong>Цена: 2 500 000 руб.</strong></p>
+                    <button onclick="addToCart('Озерная пена', 2500000, event)">В корзину</button>
+                </div>
+
+            </div>
+
+            <aside class="cart-panel">
+                <div class="cart">
+                    <div class="cart-header">
+                        <h3>Корзина</h3>
+                        <div class="cart-count" id="cartCount">0</div>
+                    </div>
+
+                    <ul class="cart-items" id="cartItems">
+                        <li class="empty-cart">Корзина пуста</li>
+                    </ul>
+
+                    <div class="cart-summary">
+                        <div class="cart-summary-row">
+                            <span>Товаров:</span>
+                            <span id="summaryCount">0</span>
+                        </div>
+                        <div class="cart-summary-row">
+                            <span>Итого:</span>
+                            <span id="totalPrice">0</span>
+                        </div>
+                    </div>
+
+                    <div class="cart-actions">
+                        <button class="cart-action-btn checkout-btn" onclick="checkout()">Оформить заказ</button>
+                        <button class="cart-action-btn clear-btn" onclick="clearCart()">Очистить корзину</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeExpandedFromOverlay()"></div>
+
+    <footer>
+        <p>&copy; 2026 Мой интернет-магазин. Все права защищены.</p>
+    </footer>
+
+    <script>
+        let cart = [];
+        let currentExpandedCard = null;
+
+        function saveCart() {
+            localStorage.setItem('ligneCoutureCart', JSON.stringify(cart));
+        }
+
+        function loadCart() {
+            const savedCart = localStorage.getItem('ligneCoutureCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+            }
+            updateCartDisplay();
+        }
+
+        function addToCart(productName, price, event) {
+            event.stopPropagation();
+
+            cart.push({
+                id: Date.now() + Math.random(),
+                name: productName,
+                price: price
+            });
+
+            saveCart();
+            updateCartDisplay();
+        }
+
+        function removeFromCart(itemId) {
+            cart = cart.filter(item => item.id !== itemId);
+            saveCart();
+            updateCartDisplay();
+        }
+
+        function clearCart() {
+            cart = [];
+            saveCart();
+            updateCartDisplay();
+        }
+
+        function getTotalPrice() {
+            return cart.reduce((sum, item) => sum + item.price, 0);
+        }
+
+        function updateCartDisplay() {
+            const cartItemsElement = document.getElementById('cartItems');
+            const totalPriceElement = document.getElementById('totalPrice');
+            const cartCountElement = document.getElementById('cartCount');
+            const summaryCountElement = document.getElementById('summaryCount');
+
+            cartItemsElement.innerHTML = '';
+
+            if (cart.length === 0) {
+                cartItemsElement.innerHTML = '<li class="empty-cart">Корзина пуста</li>';
+            } else {
+                cart.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'cart-item';
+
+                    li.innerHTML = `
+                        <div class="cart-item-top">
+                            <div>
+                                <div class="cart-item-name">${item.name}</div>
+                                <div class="cart-item-price">${item.price.toLocaleString('ru-RU')} руб.</div>
+                            </div>
+                            <button class="remove-btn" onclick="removeFromCart(${item.id})">Удалить</button>
+                        </div>
+                    `;
+
+                    cartItemsElement.appendChild(li);
+                });
+            }
+
+            const totalPrice = getTotalPrice();
+
+            cartCountElement.textContent = cart.length;
+            summaryCountElement.textContent = cart.length;
+            totalPriceElement.textContent = `${totalPrice.toLocaleString('ru-RU')} руб.`;
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Корзина пуста. Добавьте товары перед оформлением заказа.');
+                return;
+            }
+
+            const orderText = cart
+                .map((item, index) => `${index + 1}. ${item.name} — ${item.price.toLocaleString('ru-RU')} руб.`)
+                .join('\n');
+
+            const total = getTotalPrice().toLocaleString('ru-RU');
+
+            alert(
+                `Ваш заказ:\n\n${orderText}\n\nИтого: ${total} руб.\n\nДалее можно подключить настоящую форму оформления заказа.`
+            );
+        }
+
+        function toggleExpand(card) {
+            if (currentExpandedCard && currentExpandedCard !== card) {
+                currentExpandedCard.classList.remove('expanded');
+            }
+
+            const overlay = document.getElementById('overlay');
+            const isExpanded = card.classList.contains('expanded');
+
+            if (isExpanded) {
+                card.classList.remove('expanded');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                currentExpandedCard = null;
+            } else {
+                card.classList.add('expanded');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                currentExpandedCard = card;
+            }
+        }
+
+        function closeExpandedCard(event, button) {
+            event.stopPropagation();
+            const card = button.closest('.product');
+
+            if (card && card.classList.contains('expanded')) {
+                card.classList.remove('expanded');
+                document.getElementById('overlay').classList.remove('active');
+                document.body.style.overflow = 'auto';
+                currentExpandedCard = null;
+            }
+        }
+
+        function closeExpandedFromOverlay() {
+            if (currentExpandedCard) {
+                currentExpandedCard.classList.remove('expanded');
+                document.getElementById('overlay').classList.remove('active');
+                document.body.style.overflow = 'auto';
+                currentExpandedCard = null;
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && currentExpandedCard) {
+                closeExpandedFromOverlay();
+            }
+        });
+
+        loadCart();
+    </script>
+</body>
+</html>

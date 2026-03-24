@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Свяжитесь с нами — Кутюрный магазин</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #f9f7f1 0%, #f5f2e8 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .contact-header {
+            background: linear-gradient(to right, #f5b0c1, #f5b0c1);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .contact-header h2 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .contact-form {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #555;
+            fontweight: 500;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #8B4513;
+            background-color: white;
+            boxshadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: linear-gradient(to right, #8B4513, #A0522D);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            fontweight: 600;
+            transition: all 0.3s ease;
+            letterspacing: 0.5px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(to right, #57a5b3, #d4718a);
+            transform: translateY(-2px);
+            boxshadow: 0 5px 15px rgba(139, 69, 19, 0.2);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+            fontsize: 0.9rem;
+        }
+
+        /* Стили для адаптивности */
+        @media (max-width: 768px) {
+            .contact-form {
+                padding: 25px;
+            }
+            
+            .contact-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-container">
+        <div class="contact-header">
+            <h2>Свяжитесь с нами</h2>
+            <p>Мы поможем подобрать идеальное платье для вашего особого случая</p>
+            <nav class="nav">
+                <a class="na66v__link" href="index.html" style="color: white;">Главная</a>
+                <a class="nav__link" href="catalog6.html" style="color: white;">Каталог</a>
+                <a class="nav__link nav__link--active" href="contact.html" style="color: white;">Контакты</a>
+            </nav>
+        </div>
+        
+        <form class="contact-form" action="#" method="POST">
+            <div class="form-group">
+                <label for="name">Ваше имя *</label>
+                <input type="text" id="name" name="name" required placeholder="Введите ваше имя">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Электронная почта *</label>
+                <input type="email" id="email" name="email" required placeholder="your@email.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Номер телефона</label>
+                <input type="tel" id="phone" name="phone" placeholder="+7 (XXX) XXX-XX-XX">
+            </div>
+            
+            <div class="form-group">
+                <label for="inquiry-type">Тип запроса</label>
+                <select id="inquiry-type" name="inquiry-type">
+                    <option value="consultation">Консультация по выбору платья</option>
+                    <option value="custom">Заказ индивидуального платья</option>
+                    <option value="collection">Информация о новой коллекции</option>
+                    <option value="other">Другое</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Ваше сообщение *</label>
+                <textarea id="message" name="message" required placeholder="Расскажите о ваших пожеланиях..."></textarea>
+            </div>
+            
+            <button

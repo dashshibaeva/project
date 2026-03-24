@@ -1,0 +1,124 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    background-color: #f8f8f8;
+}
+
+
+
+.magazine-cover {
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+               url('https://via.placeholder.com/1920x1080') fixed no-repeat center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+.cover-content {
+    z-index: 2;
+    padding: 2rem;
+}
+
+.magazine-title {
+    font-size: 4.5rem;
+    font-weight: 300;
+    letter-spacing: 0.5rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    font-family: 'Times New Roman', serif;
+}
+
+.issue-info {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+    letter-spacing: 0.2rem;
+}
+
+.season, .year {
+    opacity: 0.9;
+}
+
+.cover-headline {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 400;
+}
+
+.cover-subheadline {
+    font-size: 1.4rem;
+    margin-bottom: 3rem;
+    max-width: 600px;
+    line-height: 1.6;
+    opacity: 0.95;
+}
+
+.price {
+    font-size: 1.1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.8rem 2rem;
+    display: inline-block;
+    letter-spacing: 0.1rem;
+}
+.image-container {
+    width: 300px;
+    height: 200px;
+    overflow: hidden; /* скрывает всё, что выходит за границы */
+    border: 1px solid #ccc;
+}
+  
+  .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+
+/* Эффект мерцания для элегантности */
+.magazine-cover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, #f5b0c1 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, #f5b0c1 0%, transparent 50%);
+    pointer-events: none;
+}
+.same-size {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .magazine-title {
+        font-size: 3rem;
+    }
+    
+    .cover-headline {
+        font-size: 2rem;
+    }
+    
+    .issue-info {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+ 
